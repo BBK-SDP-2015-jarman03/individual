@@ -77,7 +77,7 @@ public class Translator {
 		int s1; // Possible operands of the instruction
 		int s2;
 		int r;
-		int x;
+		String targetLabel;
 
 		if (line.equals(""))
 			return null;
@@ -111,6 +111,10 @@ public class Translator {
 		case "out":
 			s1 = scanInt();
 			return new OutInstruction(label, s1);
+		case "bnz":
+			s1 = scanInt();
+			targetLabel = scan();
+			return new BnzInstruction(label, s1, targetLabel);
 		}
 
 		// You will have to write code here for the other instructions.
