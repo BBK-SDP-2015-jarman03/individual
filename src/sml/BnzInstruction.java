@@ -1,29 +1,25 @@
 package sml;
 
 /**
- * This class ....
+ * An instruction to make the statement labeled "targetLabel" the 
+ * next one to execute, if the contents of the given register is not zero 
  * 
  * @author someone
  */
 
-public class BnzInstruction extends Instruction {
+public class BnzInstruction extends OneRegOneLabelInstruction {
 
-	private int op1;
-	private String targetLabel;
-
-	public BnzInstruction(String label, String op) {
-		super(label, op);
+	public BnzInstruction(String label) {
+		super(label);
 	}
 
-	public BnzInstruction(String label, int op1, String targetLabel) {
-		this(label, "bnz");
-		this.op1 = op1;
-		this.targetLabel = targetLabel;
+	public BnzInstruction(String label, int register, String targetLabel) {
+		super(label, register, targetLabel);
 	}
 
 	@Override
 	public void execute(Machine m) {
-		int value1 = m.getRegisters().getRegister(op1);
+		int value1 = m.getRegisters().getRegister(register);
 		if (value1 != 0) {
 			m.setPc(m.getLabels().indexOf(targetLabel));
 		}
@@ -31,6 +27,11 @@ public class BnzInstruction extends Instruction {
 
 	@Override
 	public String toString() {
-		return super.toString() + " " + op1 + " to " + targetLabel;
+		return super.toString() + " " + register + " to " + targetLabel;
+	}
+
+	@Override
+	public String getOpcode() {
+		return "bnz";
 	}
 }

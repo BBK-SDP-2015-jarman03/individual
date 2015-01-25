@@ -6,19 +6,14 @@ package sml;
  * @author someone
  */
 
-public class LinInstruction extends Instruction {
-	private int register;
-	private int value;
+public class LinInstruction extends OneRegOneIntInstruction {
 
-	public LinInstruction(String label, String opcode) {
-		super(label, opcode);
+	public LinInstruction(String label) {
+		super(label);
 	}
 
 	public LinInstruction(String label, int register, int value) {
-		super(label, "lin");
-		this.register = register;
-		this.value = value;
-
+		super(label, register, value);
 	}
 
 	@Override
@@ -29,5 +24,10 @@ public class LinInstruction extends Instruction {
 	@Override
 	public String toString() {
 		return super.toString() + " register " + register + " value is " + value;
+	}
+
+	@Override
+	public String getOpcode() {
+		return "lin";
 	}
 }

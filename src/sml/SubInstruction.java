@@ -6,21 +6,14 @@ package sml;
  * @author someone
  */
 
-public class SubInstruction extends Instruction {
+public class SubInstruction extends ThreeRegInstruction {
 
-	private int result;
-	private int op1;
-	private int op2;
-
-	public SubInstruction(String label, String op) {
-		super(label, op);
+	public SubInstruction(String label) {
+		super(label);
 	}
 
 	public SubInstruction(String label, int result, int op1, int op2) {
-		this(label, "sub");
-		this.result = result;
-		this.op1 = op1;
-		this.op2 = op2;
+		super(label, result, op1, op2);
 	}
 
 	@Override
@@ -33,5 +26,10 @@ public class SubInstruction extends Instruction {
 	@Override
 	public String toString() {
 		return super.toString() + " " + op1 + " - " + op2 + " to " + result;
+	}
+
+	@Override
+	public String getOpcode() {
+		return "sub";
 	}
 }

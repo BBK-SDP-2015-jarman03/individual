@@ -8,21 +8,21 @@ package sml;
 
 public abstract class Instruction {
 	protected String label;
-	protected String opcode;
+	
+	// Constructor: an instruction with label label 
 
-	// Constructor: an instruction with label l and opcode op
-	// (op must be an operation of the language)
-
-	public Instruction(String l, String op) {
-		this.label = l;
-		this.opcode = op;
+	public Instruction(String label) {
+		this.label = label;
 	}
+	
+	//returns the opcode for the instruction
+	public abstract String getOpcode();
 
 	// = the representation "label: opcode" of this Instruction
 
 	@Override
 	public String toString() {
-		return label + ": " + opcode;
+		return label + ": " + getOpcode();
 	}
 
 	// Execute this instruction on machine m.
