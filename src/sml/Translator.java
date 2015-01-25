@@ -2,6 +2,8 @@ package sml;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -73,58 +75,59 @@ public class Translator {
 	// removed. Translate line into an instruction with label label
 	// and return the instruction
 	public Instruction getInstruction(String label) {
-		int s1; // Possible operands of the instruction
-		int s2;
-		int r;
-		String targetLabel;
-
-		if (line.equals(""))
+		
+		if (line.equals("")) {
 			return null;
-
-		String ins = scan();
-		switch (ins) {
-		case "add":
-			r = scanInt();
-			s1 = scanInt();
-			s2 = scanInt();
-			return new AddInstruction(label, r, s1, s2);
-		case "lin":
-			r = scanInt();
-			s1 = scanInt();
-			return new LinInstruction(label, r, s1);
-		case "sub":
-			r = scanInt();
-			s1 = scanInt();
-			s2 = scanInt();
-			return new SubInstruction(label, r, s1, s2);
-		case "mul":
-			r = scanInt();
-			s1 = scanInt();
-			s2 = scanInt();
-			return new MulInstruction(label, r, s1, s2);
-		case "div":
-			r = scanInt();
-			s1 = scanInt();
-			s2 = scanInt();
-			return new DivInstruction(label, r, s1, s2);
-		case "out":
-			s1 = scanInt();
-			return new OutInstruction(label, s1);
-		case "bnz":
-			s1 = scanInt();
-			targetLabel = scan();
-			return new BnzInstruction(label, s1, targetLabel);
 		}
 
-		// You will have to write code here for the other instructions.
-
+		String ins = scan();
+		String className = "sml." + capitalize(ins) + "Instruction";
+		Class<?> cls;
+		try {
+			cls = Class.forName(className);
+			if (ThreeRegInstruction.class.isAssignableFrom(cls)) {
+				Constructor<?> c = cls.getConstructor(String.class,
+						Integer.TYPE, Integer.TYPE, Integer.TYPE);
+				return (Instruction) c.newInstance(label, scanInt(), scanInt(),
+						scanInt());
+			} else if (OneRegOneIntInstruction.class.isAssignableFrom(cls)) {
+				Constructor<?> c = cls.getConstructor(String.class,
+						Integer.TYPE, Integer.TYPE);
+				return (Instruction) c.newInstance(label, scanInt(), scanInt());
+			} else if (OneRegOneLabelInstruction.class.isAssignableFrom(cls)) {
+				Constructor<?> c = cls.getConstructor(String.class,
+						Integer.TYPE, String.class);
+				return (Instruction) c.newInstance(label, scanInt(), scan());
+			} else if (OneRegInstruction.class.isAssignableFrom(cls)) {
+				Constructor<?> c = cls.getConstructor(String.class,
+						Integer.TYPE);
+				return (Instruction) c.newInstance(label, scanInt());
+			} else {
+				return null;
+			}
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		} catch (NoSuchMethodException e) {
+			e.printStackTrace();
+		} catch (SecurityException e) {
+			e.printStackTrace();
+		} catch (InstantiationException e) {
+			e.printStackTrace();
+		} catch (IllegalAccessException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (InvocationTargetException e) {
+			e.printStackTrace();
+		}
 		return null;
 	}
-
+				
 	/*
 	 * Return the first word of line and remove it from line. If there is no
 	 * word, return ""
 	 */
+	
 	private String scan() {
 		line = line.trim();
 		if (line.length() == 0)
@@ -152,5 +155,9 @@ public class Translator {
 		} catch (NumberFormatException e) {
 			return Integer.MAX_VALUE;
 		}
+	}
+	
+	private String capitalize(String line) {
+		  return Character.toUpperCase(line.charAt(0)) + line.substring(1);
 	}
 }
