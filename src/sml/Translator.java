@@ -19,13 +19,12 @@ public class Translator {
 	private ArrayList<Instruction> program; // The program to be created
 	private String fileName; // source file of SML code
 
-	// The code originally provided required .sml files to be in a subdirectory
-	// called "src" of the directory from which we run the program. This restriction
-	// makes it difficult to run sml programs that live in directories that are
-	// called something else. We can just use the filename provided as it is.
+	private static final String SRC = "src";
+
 	public Translator(String fileName) {
-		this.fileName = fileName;
+		this.fileName = SRC + "/" + fileName;
 	}
+
 	// translate the small program in the file into lab (the labels) and
 	// prog (the program)
 	// return "no errors were detected"
